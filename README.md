@@ -18,6 +18,8 @@ A production-minded MVP: **Signup → Email Verify → Login**, JWT in **HttpOnl
 
 ```bash
 # from repo root
+git clone https://github.com/fawziabuhussin/task-manager-fullstack.git
+cd task-manager-fullstack
 docker compose up --build -d
 ```
 
@@ -37,6 +39,24 @@ docker compose down
 # (optional) also remove volumes/images if needed:
 # docker compose down -v --rmi local
 ```
+
+### 3) Run the integration test (automates everything)
+
+```bash
+
+PowerShell (Windows):
+
+powershell -ExecutionPolicy Bypass -File tests/integration/run_tests.ps1
+
+
+You should see steps [1/8] ... [8/8] and “Integration tests completed successfully.”
+
+bash (Linux/macOS/WSL):
+
+chmod +x tests/integration/run_tests.sh
+./tests/integration/run_tests.sh
+```
+
 
 > **Why Docker-only?** We intentionally removed local `npm run dev` paths to avoid Node/ESM/CORS/env drift across machines. Docker guarantees the same behavior graders will see.
 
