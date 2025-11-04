@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: taskdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      context: ./server
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/taskdb
+      - CORS_ORIGIN=http://localhost:5173
+      - JWT_SECRET=dev-secret-change-me
+      - CSRF_SECRET=dev-csrf-secret-change-me
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  client:
+    build:
+      context: ./client
+    environment:
+      # אם אתה עובד עם base שמכיל /api:
+      - VITE_API_URL=http://localhost:3000/api
+      # אם בקוד מוגדר VITE_API_BASE במקום:
+      # - VITE_API_BASE=http://localhost:3000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+
+volumes:
+  pgdata: {}

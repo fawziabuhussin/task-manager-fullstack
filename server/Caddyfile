@@ -1,0 +1,13 @@
+﻿:80 {
+    encode gzip zstd
+
+    # Serve SPA (built files)
+    root * /srv/client
+    try_files {path} /index.html
+    file_server
+
+    # Proxy API to the server container
+    handle_path /api/* {
+        reverse_proxy server:3000
+    }
+}

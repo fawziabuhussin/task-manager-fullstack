@@ -1,0 +1,70 @@
+export const css = `
+.loading {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.error {
+  color: #e44;
+  text-align: center;
+  padding: 20px;
+}
+
+.error button {
+  margin-left: 8px;
+}
+
+.empty {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.task-title {
+  font-weight: 600;
+  color: #222;
+}
+
+.task-desc {
+  color: #666;
+  margin-top: 4px;
+}
+
+.task-meta {
+  color: #999;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.completed .task-title {
+  text-decoration: line-through;
+  color: #666;
+}
+
+.overdue {
+  color: #e44;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.table button.delete {
+  background: #e44;
+  color: white;
+}
+
+.table button.delete:hover {
+  background: #c22;
+}
+`

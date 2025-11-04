@@ -1,0 +1,52 @@
+﻿version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: taskdb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d taskdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/taskdb?schema=public
+      JWT_SECRET: change_me_to_a_long_random_string
+      COOKIE_NAME: access_token
+      NODE_ENV: production
+      PORT: "3000"
+      TRUST_PROXY: "1"
+      LOGIN_RATE_PER_MIN: "10"
+      LOCKOUT_FAILS: "3"
+      LOCKOUT_WINDOW_SEC: "120"
+      VERIFICATION_TTL_MIN: "15"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2.8
+    depends_on:
+      - server
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./client/dist:/srv:ro
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+
+volumes:
+  pgdata:
